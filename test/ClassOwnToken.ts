@@ -1,6 +1,6 @@
 import { expect } from "chai"
 import { ethers } from "hardhat"
-import { Contract,Signer } from "ethers"
+import { Contract, Signer} from "ethers"
 
 // reference: https://hardhat.org/tutorial/testing-contracts.html
 
