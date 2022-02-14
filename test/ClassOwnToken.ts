@@ -22,21 +22,25 @@ describe("ClassOwnToken", async function () {
     expect(await token.totalSupply()).to.equal(initialSupply)
   })
 
-  it("Should mint successfully", async function () {
+  it("Should set the right owner", async function () {
+      expect(await token.owner()).to.equal(await owner.getAddress());
+  });
+
+  it("Should mint successfully mint() by owner", async function () {
     await token.mint(await owner.getAddress(),amountMint)
     expect(await token.totalSupply()).to.equal(initialSupply.add(amountMint))
   })
 
-  it("Should revert when mint() is not called by owner", async function () {
+  it("Should revert mint() not called by owner", async function () {
     const tokenwithnewsigner = token.connect(addr1)
     await expect(tokenwithnewsigner.mint(await addr1.getAddress(),amountMint)).to.be.reverted
   })
 
-  it("Should revert when mint() with zero", async function () {
+  it("Should revert mint() with zero", async function () {
     await expect(token.mint(await owner.getAddress(),0)).to.be.reverted
   })
 
-  it("Should revert when mint() with wrong mintTo address", async function () {
+  it("Should revert mint() with wrong mintTo address", async function () {
     //correct: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266'
     const wrongMintTo = '0xf39fd6e51aad88f6f4ce6ab8827279cfffb9226' 
     await expect(token.mint(wrongMintTo,amountMint)).to.be.reverted
