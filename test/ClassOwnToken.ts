@@ -31,6 +31,12 @@ describe("ClassOwnToken", async function () {
     expect(await token.totalSupply()).to.equal(initialSupply.add(amountMint))
   })
 
+  it("Should emit correctEvent mint() by owner", async function () {
+    const ownerAddress = await owner.getAddress()
+    await expect(token.mint(ownerAddress,amountMint)).to.emit(token, 'Mint').withArgs(ownerAddress, amountMint);
+  })
+
+
   it("Should revert mint() not called by owner", async function () {
     const tokenwithnewsigner = token.connect(addr1)
     await expect(tokenwithnewsigner.mint(await addr1.getAddress(),amountMint)).to.be.reverted
