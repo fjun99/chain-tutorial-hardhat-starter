@@ -1,6 +1,6 @@
 import { expect } from "chai"
 import { ethers } from "hardhat"
-import { Contract, Signer} from "ethers"
+import { Contract, Signer, ContractInterface} from "ethers"
 
 // reference: https://hardhat.org/tutorial/testing-contracts.html
 
@@ -50,4 +50,30 @@ describe("ClassOwnToken", async function () {
     const wrongMintTo = '0xf39fd6e51aad88f6f4ce6ab8827279cfffb9226' 
     await expect(token.mint(wrongMintTo,amountMint)).to.be.reverted
   })
+
+  it("Should transfer correctly by parsing Event ", async function () {
+    const ownerAddress = await owner.getAddress()
+    const toAddress  = await addr1.getAddress()
+    const amount = ethers.utils.parseEther('100')
+
+    const tx = await token.transfer(toAddress, amount)
+    const receipt = await ethers.provider.getTransactionReceipt(tx.hash)
+
+    const iface:ContractInterface = 
+      new ethers.utils.Interface(["event Transfer(address indexed from, address indexed to, uint256 amount)"])
+
+    const aevent = iface.parseLog(receipt.logs[0])
+    expect(aevent.args.from).to.equal(ownerAddress)
+    expect(aevent.args.to).to.equal(toAddress)
+    expect(aevent.args.amount).to.equal(amount)    
+/*
+    const data = receipt.logs[0].data
+    const topics = receipt.logs[0].topics
+    const event = iface.decodeEventLog("Transfer", data, topics)
+    expect(event.from).to.equal(ownerAddress)
+    expect(event.to).to.equal(toAddress)
+    expect(event.amount).to.equal(amount)
+*/    
+  })  
+
 })
