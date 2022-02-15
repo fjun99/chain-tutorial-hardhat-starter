@@ -80,7 +80,7 @@ describe("Ballot", async function () {
     expect((await ballot.proposals(1)).voteCount).to.equal(BigNumber.from(2))
   })
 
-  it("Should weigh add if vote after delegate", async function () {
+  it("Should add weigh(+1) if vote after delegate", async function () {
     //voter[1] -> voter[0], proB(1) got 2 
     let signer
     signer = await ethers.getSigner(voters[1])
@@ -93,7 +93,7 @@ describe("Ballot", async function () {
     expect((await ballot.voters(voters[0])).weight).to.equal(BigNumber.from(2))
   }) 
 
-  it("Should weigh not add if vote before delegate", async function () {
+  it("Should not add weigh(+1) if vote before delegate", async function () {
     //delegate after vote
     //voter[0] choose proB(1) 
     ballot.vote(1)
@@ -114,6 +114,8 @@ describe("Ballot", async function () {
 
     signer = await ethers.getSigner(voters[2])
     await ballot.connect(signer).delegate(voters[3])
+
+    expect((await ballot.voters(voters[3])).weight).to.equal(BigNumber.from(3))
 
     signer = await ethers.getSigner(voters[3])
     await expect(ballot.connect(signer).delegate(voters[1])).to.be.reverted
