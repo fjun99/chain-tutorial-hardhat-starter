@@ -61,7 +61,7 @@ describe("Ballot", async function () {
     await expect(ballot.connect(signer).delegate(voters[1])).to.be.reverted
   })
 
-  it("Should delegate successfully vote correctly", async function () {
+  it("Should delegate successfully and vote correctly", async function () {
     //voter[1] -> voter[0], proB(1) got 2 
     let signer
     signer = await ethers.getSigner(voters[1])
