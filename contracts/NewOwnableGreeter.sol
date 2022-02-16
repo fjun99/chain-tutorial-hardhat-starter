@@ -11,20 +11,20 @@ contract Owned {
     }
 }
 
-contract NewOwnableGreeter is Owned{
+contract NewOwnableGreeter is Owned {
     string private greeting;
     string public prefix = "OG: ";
 
-    constructor(string memory _greeting){
+    constructor(string memory _greeting) {
         greeting = _greeting;
     }
 
     function setPrefix(string memory _prefix) 
-        public onlyOwner{
+        public onlyOwner {
         prefix = _prefix;
     }
 
-    function greet() public view returns (string memory){
+    function greet() public view returns (string memory) {
         return string(abi.encodePacked(prefix, greeting));
     }
 

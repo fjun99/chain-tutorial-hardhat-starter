@@ -14,7 +14,7 @@ contract ClassOwnToken is ERC20,Ownable {
         }
 
         function mint(address mintTo,uint amount) 
-          public onlyOwner{
+          public onlyOwner {
                 require(mintTo == address(mintTo),
                         "Invalid address");
                 require(amount > 0,"Amount should > 0");
