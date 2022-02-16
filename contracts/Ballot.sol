@@ -54,13 +54,13 @@ contract Ballot {
     function giveRightToVote(address voter) public {
         require(
             msg.sender == chairperson,
-            "Only chairperson can give right to vote."
+            "Only chairperson."
         );
         require(
             !voters[voter].voted,
             "The voter already voted."
         );
-        require(voters[voter].weight == 0);
+        require(voters[voter].weight == 0,"Already has right.");
         voters[voter].weight = 1;
     }
 
@@ -143,7 +143,7 @@ contract Ballot {
     function giveRightToVotes(address[] memory addvoters) public {
         require(
             msg.sender == chairperson,
-            "Only chairperson can give right to vote."
+            "Only chairperson."
         );
 
         address voter;
@@ -154,7 +154,7 @@ contract Ballot {
                 !voters[voter].voted,
                 "The voter already voted."
             );
-            require(voters[voter].weight == 0);
+            require(voters[voter].weight == 0,"Already has right.");
             voters[voter].weight = 1;
         }
     }
