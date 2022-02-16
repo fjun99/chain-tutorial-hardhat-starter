@@ -2,6 +2,17 @@
 - hardhat
 - OpenZeppelin
 
+# Soldity by example
+
+Solidity by example in [docs](https://docs.soliditylang.org/en/v0.8.11/solidity-by-example.html).
+
+- Ballot
+- Purchase
+
+Unit test added. 
+
+
+
 # Advanced Sample Hardhat Project
 
 This project demonstrates an advanced Hardhat use case, integrating other tools commonly used alongside Hardhat in the ecosystem.
