@@ -1,7 +1,7 @@
 import { expect } from "chai"
 import { ethers } from "hardhat"
 import { Contract, Signer, ContractInterface } from "ethers"
-import { TransactionResponse, TransactionReceipt } from "@ethersproject/abstract-provider"
+import { TransactionResponse, TransactionReceipt } from "@ethersproject/providers"
 import { LogDescription } from "@ethersproject/abi"
 import { BigNumberish } from "ethers"
 import { BytesLike } from "@ethersproject/bytes"
@@ -140,5 +140,20 @@ describe("Blog (Event)", async function () {
     expect(event.title).to.equal(newBlogTitle)
     expect(event.id).to.equal(1)//should remain to be the same 1
   })
+
+
+  it("Should create a post without event for test", async function () {
+    const blogTitle = "My first post"
+    const contentHash = ethers.utils.id("12345")
+
+    await blog.createPostWithoutEvent(blogTitle, contentHash)
+
+    const posts = await blog.fetchPosts()
+
+    //this is the first post, so it is posts[0]
+    expect(posts[0].title).to.equal(blogTitle)
+    expect(posts[0].contentHash).to.equal(contentHash)
+    expect(posts[0].id).to.equal(1)
+  })  
 
 })

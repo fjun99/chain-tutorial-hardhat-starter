@@ -12,7 +12,7 @@ interface Post {
     }  
 
 describe("Blog", async function () {
-  let oriblogName = "My blog"
+  let initialblogName = "My blog"
   let blog:Contract
   let posts:Post[]
   let owner:Signer
@@ -21,7 +21,7 @@ describe("Blog", async function () {
   beforeEach(async function () {
     [owner, account1] = await ethers.getSigners()
     const Blog = await ethers.getContractFactory("Blog")
-    blog = await Blog.deploy(oriblogName)
+    blog = await Blog.deploy(initialblogName)
     await blog.deployed()
   })
     
@@ -77,19 +77,19 @@ describe("Blog", async function () {
 
   it("Should update the blog name by owner", async function () {
     const newBlogName = "My new blog"
-    expect(await blog.name()).to.equal(oriblogName)
+    expect(await blog.name()).to.equal(initialblogName)
     await blog.updateName(newBlogName)
     expect(await blog.name()).to.equal(newBlogName)
   })
 
   it("Should revert to update the blog name not by owner", async function () {
     const newBlogName = "My new blog"
-    expect(await blog.name()).to.equal(oriblogName)
+    expect(await blog.name()).to.equal(initialblogName)
     await expect(blog.connect(account1).updateName(newBlogName)).to.be.reverted
   })
 
   it("Should transfer owner successfuly and update name by new owner", async function () {
-    expect(await blog.name()).to.equal(oriblogName)
+    expect(await blog.name()).to.equal(initialblogName)
 
     await blog.transferOwnership(await account1.getAddress())
 

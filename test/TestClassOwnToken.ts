@@ -1,7 +1,7 @@
 import { expect } from "chai"
 import { ethers } from "hardhat"
 import { Contract, Signer, ContractInterface } from "ethers"
-import { TransactionResponse, TransactionReceipt } from "@ethersproject/abstract-provider"
+import { TransactionResponse, TransactionReceipt } from "@ethersproject/providers"
 import { LogDescription } from "@ethersproject/abi"
 
 // reference: https://hardhat.org/tutorial/testing-contracts.html
