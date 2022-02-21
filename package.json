@@ -1,7 +1,10 @@
 {
   "license": "MIT",
   "dependencies": {
+    "@nomiclabs/hardhat-truffle5": "^2.0.4",
+    "@nomiclabs/hardhat-web3": "^2.0.0",
     "@openzeppelin/contracts": "^4.4.2",
+    "@openzeppelin/test-helpers": "^0.5.15",
     "hardhat": "^2.8.3"
   },
   "devDependencies": {
