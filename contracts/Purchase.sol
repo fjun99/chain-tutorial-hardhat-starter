@@ -10,7 +10,7 @@ contract Purchase {
     State public state;
 
     modifier condition(bool condition_) {
-        require(condition_);
+        require(condition_,"require condition");
         _;
     }
 
