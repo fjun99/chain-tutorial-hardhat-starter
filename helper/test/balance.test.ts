@@ -4,8 +4,7 @@ import { ethers } from "hardhat"
 import { Signer } from "ethers"
 import { parseEther } from "@ethersproject/units"
 import { TransactionRequest } from "@ethersproject/providers"
-
-const balance = require('../balance')
+import { balance, tracker } from "../balance"
 
 describe("balance.ts Test Helper", function () {
   let account0:Signer
@@ -20,44 +19,48 @@ describe("balance.ts Test Helper", function () {
   })
   
   it('returns current balance ', async function () {
-    const tracker = await balance.tracker(address0)
-    expect(await tracker.get()).to.equal(await ethers.provider.getBalance(address0))
+    expect(await balance(address0)).to.equal(await ethers.provider.getBalance(address0))
+
+    const mytracker = await tracker(address0)
+    expect(await mytracker.get()).to.equal(await ethers.provider.getBalance(address0))
   })
 
   it('returns correct deltas after get() checkpoint', async function () {
-    const tracker = await balance.tracker(address1)
-    await tracker.get()
+    const mytracker = await tracker(address1)
+    await mytracker.get()
 
     await helperSendETH(account0,address1,'1.0')
 
-    expect(await tracker.delta()).to.equal(parseEther('1.0'))
+    expect(await mytracker.delta()).to.equal(parseEther('1.0'))
   })
 
   it('returns balance increments', async function () {
-    const tracker = await balance.tracker(address1)
+    const mytracker = await tracker(address1)
 
     await helperSendETH(account0,address1,'1.0')
 
-    expect(await tracker.delta()).to.equal(parseEther('1.0'))
+    expect(await mytracker.delta()).to.equal(parseEther('1.0'))
   })
 
   it('returns balance decrements', async function () {
-    const tracker = await balance.tracker(address0)
+    const mytracker = await tracker(address0)
 
     await helperSendETH(account0,address1,'1.0')
+    await helperSendETH(account0,address1,'1.0')
 
-    const { delta, fees } = await tracker.deltaWithFees()
-    expect(delta.add(fees)).to.equal(parseEther('-1.0'))
+    const { delta, fees } = await mytracker.deltaWithFees()
+    expect(delta.add(fees)).to.equal(parseEther('-2.0'))
   })
 
   it('returns consecutive deltas', async function () {
-    const tracker = await balance.tracker(address0)
+    const mytracker = await tracker(address0)
 
     await helperSendETH(account0,address1,'1.0')
 
-    await tracker.delta()
-    expect(await tracker.delta()).to.equal(parseEther('0'))
+    await mytracker.delta()
+    expect(await mytracker.delta()).to.equal(parseEther('0'))
   }) 
+  
 })
 
 async function helperSendETH(sender:Signer,to:string,value:string){

@@ -13,13 +13,14 @@ class Tracker {
     this.prevBlock = 0
   }
 
-  async delta () {
-    const { delta } = await this.deltaWithFees()
-    return delta
+  async get () {
+    this.prev = await balance(this.account)
+    this.prevBlock = await ethers.provider.getBlockNumber()
+    return this.prev
   }
 
   async deltaWithFees () {
-    const current = await balanceCurrent(this.account)
+    const current = await balance(this.account)
     const delta = current.sub(this.prev)
     this.prev = current
 
@@ -32,21 +33,11 @@ class Tracker {
       }
   }
 
-  async get () {
-    this.prev = await balanceCurrent(this.account)
-    this.prevBlock = await ethers.provider.getBlockNumber()
-    return this.prev
+  async delta () {
+    const { delta } = await this.deltaWithFees()
+    return delta
   }
-}
 
-async function balanceTracker (owner:string) {
-  const tracker = new Tracker(owner)
-  await tracker.get()
-  return tracker
-}
-
-async function balanceCurrent (account:string) {
-    return await ethers.provider.getBalance(account)
 }
 
 async function feesPaid (account:string, sinceBlock:number) {
@@ -67,7 +58,12 @@ async function feesPaid (account:string, sinceBlock:number) {
   return gas
 }
 
-module.exports = {
-  current: balanceCurrent,
-  tracker: balanceTracker,
+export async function balance(account:string) {
+  return await ethers.provider.getBalance(account)
+}
+
+export async function tracker (owner:string) {
+  const tracker = new Tracker(owner)
+  await tracker.get() //set original state
+  return tracker
 }
