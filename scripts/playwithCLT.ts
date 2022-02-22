@@ -3,7 +3,7 @@ import { Contract  } from "ethers"
 import { formatEther, parseEther} from "@ethersproject/units"
 import { TransactionResponse, TransactionReceipt } from "@ethersproject/providers"
 
-// *** do please deploy ClassToken to localhost first ***
+// *** please DEPLOY ClassToken to localhost first ***
 
 const contractaddress = '0x5fbdb2315678afecb367f032d93f642f64180aa3'
 
