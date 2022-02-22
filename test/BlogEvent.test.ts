@@ -9,7 +9,7 @@ import { BytesLike } from "@ethersproject/bytes"
 // https://medium.com/linum-labs/everything-you-ever-wanted-to-know-about-events-and-logs-on-ethereum-fec84ea7d0a5
 
 describe("Blog (Event)", async function () {
-  let oriblogName = "My blog"
+  const originblogName = "My blog"
   let blog:Contract
   let owner:Signer
   let account1:Signer
@@ -25,8 +25,9 @@ describe("Blog (Event)", async function () {
 
   beforeEach(async function () {
     [owner, account1] = await ethers.getSigners()
+
     const Blog = await ethers.getContractFactory("Blog")
-    blog = await Blog.deploy(oriblogName)
+    blog = await Blog.deploy(originblogName)
     await blog.deployed()
   })
 
@@ -64,7 +65,6 @@ describe("Blog (Event)", async function () {
 
 
   // ref: https://docs.ethers.io/v4/cookbook-testing.html#contract-events
-
   it("Should emit event PostCreated correctly", async function () {
     console.log("Listening PostCreated event. Waiting for *1 minute*...")
     interface PostCreated {
@@ -74,19 +74,19 @@ describe("Blog (Event)", async function () {
     }  
 
     const postCreatedEvent = new Promise<PostCreated>((resolve, reject) => {
-        blog.on('PostCreated', (id, title, contentHash,event) => {
-            event.removeListener()
+      blog.on('PostCreated', (id, title, contentHash,event) => {
+        event.removeListener()
 
-            resolve({
-                id: id,
-                title: title,
-                contentHash: contentHash
-            })
+        resolve({
+          id: id,
+          title: title,
+          contentHash: contentHash
         })
+      })
 
-        setTimeout(() => {
-            reject(new Error('timeout'))
-        }, 60000)   //1 min
+      setTimeout(() => {
+        reject(new Error('timeout'))
+      }, 60000)   //1 min
     })
 
     await blog.createPost(blogTitle, contentHash)
@@ -107,20 +107,20 @@ describe("Blog (Event)", async function () {
     }  
 
     const postUpdatedEvent = new Promise<PostUpdated>((resolve, reject) => {
-        blog.on('PostUpdated', (id, title,contentHash,published,event) => {
-            event.removeListener()
+      blog.on('PostUpdated', (id, title,contentHash,published,event) => {
+        event.removeListener()
 
-            resolve({
-                id: id,
-                title: title,
-                contentHash: contentHash,
-                published: published 
-            })
+        resolve({
+          id: id,
+          title: title,
+          contentHash: contentHash,
+          published: published 
         })
+      })
 
-        setTimeout(() => {
-            reject(new Error('timeout'))
-        }, 60000)   //1 min
+      setTimeout(() => {
+      reject(new Error('timeout'))
+      }, 60000)   //1 min
     })
 
     await blog.createPost(blogTitle, contentHash)

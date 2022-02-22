@@ -56,7 +56,6 @@ describe("Blog", async function () {
 
     expect(posts[2].title).to.equal("My third post")
     expect(posts[2].id).to.equal(3)
-
   })
 
   it("Should edit a post", async function () {
