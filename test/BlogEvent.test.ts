@@ -31,41 +31,32 @@ describe("Blog (Event)", async function () {
   })
 
   it("Should log event PostCreated correctly", async function () {
+    //create post
+    const tx:TransactionResponse = await blog.createPost(blogTitle, contentHash)
+    const receipt:TransactionReceipt = await ethers.provider.getTransactionReceipt(tx.hash)
 
-    let tx:TransactionResponse
-    let receipt:TransactionReceipt
-    let aevent:LogDescription
-
-    //creat post
-    tx = await blog.createPost(blogTitle, contentHash)
-    receipt = await ethers.provider.getTransactionReceipt(tx.hash)
-
-    aevent = iface.parseLog(receipt.logs[0])
+    const aevent:LogDescription = iface.parseLog(receipt.logs[0])
     expect(aevent.name).to.be.equal("PostCreated")
     expect(aevent.args.title).to.equal(blogTitle)
     expect(aevent.args.id).to.equal(1)//id start from 1
   })
 
   it("Should log event PostUpdated correctly", async function () {
-    let tx:TransactionResponse
-    let receipt:TransactionReceipt
-    let aevent:LogDescription
-
     //create post
-    tx = await blog.createPost(blogTitle, contentHash)
+    const tx:TransactionResponse = await blog.createPost(blogTitle, contentHash)
 
-    receipt = await ethers.provider.getTransactionReceipt(tx.hash)
-    aevent = iface.parseLog(receipt.logs[0])
+    const receipt:TransactionReceipt = await ethers.provider.getTransactionReceipt(tx.hash)
+    const aevent:LogDescription = iface.parseLog(receipt.logs[0])
     expect(aevent.args.id).to.equal(1)//id start from 1
 
-    //update post: change title and contentHash 
-    tx = await blog.updatePost(aevent.args.id, newBlogTitle, newContentHash, true)
-    receipt = await ethers.provider.getTransactionReceipt(tx.hash)
+    //update post 
+    const newtx:TransactionResponse = await blog.updatePost(aevent.args.id, newBlogTitle, newContentHash, true)
+    const newreceipt:TransactionReceipt = await ethers.provider.getTransactionReceipt(newtx.hash)
 
     // aevent = iface.parseLog(receipt.logs[0])
-    //in another way (ethers.js v5)
-    const data = receipt.logs[0].data
-    const topics = receipt.logs[0].topics
+    // we do it in another way (ethers.js v5)
+    const data = newreceipt.logs[0].data
+    const topics = newreceipt.logs[0].topics
     const event = iface.decodeEventLog("PostUpdated", data, topics)
     expect(event.title).to.equal(newBlogTitle)
     expect(event.id).to.equal(1)//should remain to be the same 1
@@ -75,14 +66,14 @@ describe("Blog (Event)", async function () {
   // ref: https://docs.ethers.io/v4/cookbook-testing.html#contract-events
 
   it("Should emit event PostCreated correctly", async function () {
-    console.log("Waiting for PostCreated event for *1 minute*...")
+    console.log("Listening PostCreated event. Waiting for *1 minute*...")
     interface PostCreated {
       id: BigNumberish,
       title: string,
       contentHash: BytesLike
     }  
 
-    let postCreatedEvent = new Promise<PostCreated>((resolve, reject) => {
+    const postCreatedEvent = new Promise<PostCreated>((resolve, reject) => {
         blog.on('PostCreated', (id, title, contentHash,event) => {
             event.removeListener()
 
@@ -100,14 +91,14 @@ describe("Blog (Event)", async function () {
 
     await blog.createPost(blogTitle, contentHash)
 
-    let event:PostCreated = await postCreatedEvent
+    const event:PostCreated = await postCreatedEvent
 
     expect(event.title).to.equal(blogTitle)
-    expect(event.id).to.equal(1)//should remain to be the same 1
+    expect(event.id).to.equal(1)//should be 1
   })
 
   it("Should emit event PostUpdated correctly", async function () {
-    console.log("Waiting for PostUpdated event for *1 minute*...")
+    console.log("Listening PostUpdated event. Waiting for *1 minute*...")
     interface PostUpdated {
       id: BigNumberish,
       title: string,
@@ -115,7 +106,7 @@ describe("Blog (Event)", async function () {
       published: Boolean
     }  
 
-    let postUpdatedEvent = new Promise<PostUpdated>((resolve, reject) => {
+    const postUpdatedEvent = new Promise<PostUpdated>((resolve, reject) => {
         blog.on('PostUpdated', (id, title,contentHash,published,event) => {
             event.removeListener()
 
@@ -135,7 +126,7 @@ describe("Blog (Event)", async function () {
     await blog.createPost(blogTitle, contentHash)
     await blog.updatePost(1, newBlogTitle, newContentHash, true)
 
-    let event:PostUpdated = await postUpdatedEvent
+    const event:PostUpdated = await postUpdatedEvent
 
     expect(event.title).to.equal(newBlogTitle)
     expect(event.id).to.equal(1)//should remain to be the same 1
