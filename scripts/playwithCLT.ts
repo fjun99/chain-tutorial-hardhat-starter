@@ -62,9 +62,9 @@ async function main() {
 }
 
 main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+  console.error(error)
+  process.exitCode = 1
+})
 
 async function printBalances(token:Contract,addresses:string[],symbol:string){
     console.log("\n === balance ===")
