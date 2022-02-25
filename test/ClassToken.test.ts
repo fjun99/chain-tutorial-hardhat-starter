@@ -22,7 +22,6 @@ describe("ClassToken", function () {
 
   it("Should token transfer with correct balance", async function () {
     expect(await account1.getAddress()).to.be.properAddress
-    
     const amount = ethers.utils.parseEther('200.0')
 
     await expect(async () => token.transfer(await account1.getAddress(),amount))
