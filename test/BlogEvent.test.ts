@@ -132,6 +132,22 @@ describe("Blog (Event)", async function () {
     expect(event.id).to.equal(1)//should remain to be the same 1
   })
 
+  //using waffle : https://ethereum-waffle.readthedocs.io/en/latest/matchers.html#emitting-events
+  // event PostCreated(uint id, string title, bytes32 contentHash);
+  // event PostUpdated(uint id, string title, bytes32 contentHash, bool published);
+  it("Should emit event PostCreated correctly(Test with Waffle)", async function () {
+    await expect(blog.createPost(blogTitle, contentHash))
+    .to.emit(blog, 'PostCreated')
+    .withArgs(1, blogTitle, contentHash)
+  })
+
+  it("Should emit event PostUpdated correctly(Test with Waffle)", async function () {
+    await blog.createPost(blogTitle, contentHash)
+
+    await expect(blog.updatePost(1, newBlogTitle, newContentHash, true))
+    .to.emit(blog, 'PostUpdated')
+    .withArgs(1, newBlogTitle, newContentHash,true)
+  })
 
   it("Should create a post without event for test", async function () {
     const blogTitle = "My first post"
