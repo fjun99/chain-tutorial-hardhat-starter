@@ -24,9 +24,6 @@ task("transfer", "Transfer ERC20 ClassToken(CLT) at 0x5FbDB2315678afecb367f032d9
       }).catch((e:Error)=>console.log(e))
 });
 
-// refer: 
-// https://docs.alchemy.com/alchemy/tutorials/how-to-create-an-nft/how-to-mint-an-nft-with-ethers
-
 // a testtask: yarn hardhat testtask --token-desc 'abc'
 task("testtask", "a test task")
   .addParam("tokenDesc", "Token Desc", "default-desc", types.string)
