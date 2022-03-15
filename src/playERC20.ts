@@ -1,4 +1,4 @@
-// src/playERC20t.ts
+// src/playERC20.ts
 import { Signer } from "ethers"
 import { ethers } from "hardhat"
 import { parseEther, formatEther } from "ethers/lib/utils"
