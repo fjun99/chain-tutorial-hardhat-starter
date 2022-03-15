@@ -23,8 +23,8 @@ describe("ClassBadge", function () {
   it("Should mint NFT with Event correctly ", async function () {
     const address1 = await account1.getAddress()
     await expect(token.safeMint(address1))
-    .to.emit(token, 'Transfer')
-    .withArgs(ethers.constants.AddressZero, address1, 1)
+      .to.emit(token, 'Transfer')
+      .withArgs(ethers.constants.AddressZero, address1, 1)
 
     expect(await token.balanceOf(await owner.getAddress())).to.equal(0)
     expect(await token.balanceOf(address1)).to.equal(1)
