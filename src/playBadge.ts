@@ -21,8 +21,7 @@ async function main() {
   console.log("ClassBadge deployed to:", token.address)
 
   const abifile = require("../artifacts/contracts/ClassBadge.sol/ClassBadge.json")
-  const abi = abifile.abi
-  const iface:ContractInterface = new ethers.utils.Interface(abi)
+  const iface:ContractInterface = new ethers.utils.Interface(abifile.abi)
        
   /* mint */
   let txresponse:TransactionResponse
@@ -70,7 +69,7 @@ async function main() {
 
   printNFTEvent(e)
   // console.log(e)
-  // console.log(e)
+  console.log(e)
   // console.log(typeof e.args)
   
   // console.log(e.args.length)
