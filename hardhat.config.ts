@@ -30,13 +30,16 @@ import("./tasks/mytask");
 // Go to https://hardhat.org/config/ to learn more
 
 const config: HardhatUserConfig = {
-  solidity: "0.8.9",
+  solidity: "0.8.13",
   networks: {
     ropsten: {
       url: process.env.ROPSTEN_URL || "",
       accounts:
        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
+    mainnet: {
+      url: process.env.ALCHEMY_URL || "",
+    },    
   },
   gasReporter: {
     enabled: process.env.REPORT_GAS !== undefined,
