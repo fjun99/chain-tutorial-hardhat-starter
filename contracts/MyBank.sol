@@ -14,7 +14,7 @@ contract MyBank {
   }
 
   receive()  external payable{
-  }    
+  } 
 
   // should have withdraw function!
   function withdraw() public {
