@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract ClassTokenSale is Ownable {
@@ -23,8 +23,10 @@ contract ClassTokenSale is Ownable {
 
         function withdrawAll() public 
                 onlyOwner{
-                payable(msg.sender).transfer(address(this).balance);
                 uint amount = IERC20(tokenAddress).balanceOf(address(this));
+                require((address(this).balance>0 || amount>0),"nothing to withdraw");
+
+                payable(msg.sender).transfer(address(this).balance);
                 IERC20(tokenAddress).transfer(msg.sender, amount);
         }
 }

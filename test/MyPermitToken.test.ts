@@ -8,7 +8,7 @@ const privateKey = '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4
 const wallet = new ethers.Wallet(privateKey)
 
 const types = {
-    Permit:[
+    'Permit':[
         {name:'owner',type:'address'},
         {name:'spender',type:'address'},
         {name:'value',type:'uint256'},
@@ -51,6 +51,7 @@ describe("MyPermitToken", function () {
   it("should set allowance with permit() sent by one's own address", async () => {
     const blocktime = (await ethers.provider.getBlock(await ethers.provider.getBlockNumber())).timestamp
     const deadline = blocktime + 20*1000
+    const nonce = await token.nonces(senderAddress)
 
     domain.verifyingContract = token.address
 
@@ -58,14 +59,27 @@ describe("MyPermitToken", function () {
         owner:senderAddress,
         spender:spenderAddress,
         value:transfervalue,
-        nonce:await token.nonces(senderAddress),
+        nonce:nonce,
         deadline:deadline
         }
 
     let signature = await wallet._signTypedData(domain, types, value)
     let sig = ethers.utils.splitSignature(signature)
+    
+    // const TypedDataEncoder = ethers.utils._TypedDataEncoder
+    // console.log(JSON.stringify(TypedDataEncoder.getPayload(domain,types,value)))
+    // console.log(signature)
+    //
+    // Note : you can sign this using metamask: localhost, 0x..66
+    // ethereum.request({ method: 'eth_requestAccounts' });
+    // account = ethereum.selectedAddress
+    // ethereum.request({
+    //       method: 'eth_signTypedData_v4',
+    //       params: [account,msgParams, ],
+    //       from: account,
+    //     }).then(console.log)
 
-    await token.permit(
+    await expect(token.permit(
         senderAddress,
         spenderAddress,
         transfervalue,
@@ -73,6 +87,7 @@ describe("MyPermitToken", function () {
         sig.v,
         sig.r,
         sig.s)
+    ).to.emit(token, 'Approval').withArgs(senderAddress, spenderAddress, transfervalue)
 
     expect(await token.allowance(senderAddress,spenderAddress)).to.be.equal(transfervalue)
 
@@ -81,11 +96,13 @@ describe("MyPermitToken", function () {
 
     expect(await token.allowance(senderAddress,spenderAddress)).to.be.equal(0)
     expect(await token.balanceOf(spenderAddress)).to.be.equal(transfervalue)
+    expect(await token.nonces(senderAddress)).to.be.equal(nonce.add(1))
   }); 
 
   it("should set allowance with permit() sent by another address", async () => {
     const blocktime = (await ethers.provider.getBlock(await ethers.provider.getBlockNumber())).timestamp
     const deadline = blocktime + 20*1000
+    const nonce = await token.nonces(senderAddress)
 
     domain.verifyingContract = token.address
 
@@ -93,7 +110,7 @@ describe("MyPermitToken", function () {
         owner:senderAddress,
         spender:spenderAddress,
         value:transfervalue,
-        nonce:await token.nonces(senderAddress),
+        nonce:nonce,
         deadline:deadline
         }
 
@@ -118,6 +135,7 @@ describe("MyPermitToken", function () {
   it("should revert with wrong nonce", async () => {
     const blocktime = (await ethers.provider.getBlock(await ethers.provider.getBlockNumber())).timestamp
     const deadline = blocktime + 20*1000
+    const nonce = await token.nonces(senderAddress)
 
     domain.verifyingContract = token.address
 
@@ -125,7 +143,7 @@ describe("MyPermitToken", function () {
         owner:senderAddress,
         spender:spenderAddress,
         value:transfervalue,
-        nonce:(await token.nonces(senderAddress)).add(1),
+        nonce:nonce.add(1),
         deadline:deadline
         }
 
@@ -147,6 +165,7 @@ describe("MyPermitToken", function () {
   it("should revert with wrong deadline", async () => {
     const blocktime = (await ethers.provider.getBlock(await ethers.provider.getBlockNumber())).timestamp
     const deadline = blocktime
+    const nonce = await token.nonces(senderAddress)
 
     domain.verifyingContract = token.address
 
@@ -154,7 +173,7 @@ describe("MyPermitToken", function () {
         owner:senderAddress,
         spender:spenderAddress,
         value:transfervalue,
-        nonce:await token.nonces(senderAddress),
+        nonce:nonce,
         deadline:deadline
         }
 
@@ -175,6 +194,7 @@ describe("MyPermitToken", function () {
   it("should revert if replay", async () => {
     const blocktime = (await ethers.provider.getBlock(await ethers.provider.getBlockNumber())).timestamp
     const deadline = blocktime + 20*1000
+    const nonce = await token.nonces(senderAddress)
 
     domain.verifyingContract = token.address
 
@@ -182,7 +202,7 @@ describe("MyPermitToken", function () {
         owner:senderAddress,
         spender:spenderAddress,
         value:transfervalue,
-        nonce:await token.nonces(senderAddress),
+        nonce:nonce,
         deadline:deadline
         }
 
