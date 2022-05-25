@@ -2,6 +2,7 @@ import { expect } from "chai"
 import { ethers } from "hardhat"
 import { Signer } from "ethers"
 import { ClassToken, ClassTokenSale } from "../typechain"
+import { TransactionResponse, TransactionReceipt } from "@ethersproject/abstract-provider"
 
 const parseEther = ethers.utils.parseEther
 
@@ -50,6 +51,21 @@ describe("ClassToken", function () {
 
     expect(await token.balanceOf(await account1.getAddress()))
       .to.equal(price.mul(eth_value))
+  })
+
+  it("Should buy CLT correctly with gas calculation", async function () {
+    const address1 = await account1.getAddress()
+    const balanceBefore = await ethers.provider.getBalance(address1)
+
+    const eth_value = parseEther('1.0')
+    const tokenSale_forbuyer = await tokenSale.connect(account1)
+    const tx:TransactionResponse = await tokenSale_forbuyer.buy({value:eth_value})
+    const txreceipt = await tx.wait()
+
+    const gas = txreceipt.gasUsed.mul(txreceipt.effectiveGasPrice)
+    const balanceAfter = await ethers.provider.getBalance(address1)
+
+    expect(balanceAfter).to.equal(balanceBefore.sub(eth_value).sub(gas) )
   })
 
   it("Should buy CLT with 50.1 ETH be reverted", async function () {
