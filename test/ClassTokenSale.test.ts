@@ -60,7 +60,7 @@ describe("ClassToken", function () {
     const eth_value = parseEther('1.0')
     const tokenSale_forbuyer = await tokenSale.connect(account1)
     const tx:TransactionResponse = await tokenSale_forbuyer.buy({value:eth_value})
-    const txreceipt = await tx.wait()
+    const txreceipt:TransactionReceipt = await tx.wait()
 
     const gas = txreceipt.gasUsed.mul(txreceipt.effectiveGasPrice)
     const balanceAfter = await ethers.provider.getBalance(address1)
