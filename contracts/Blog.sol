@@ -100,19 +100,7 @@ contract Blog {
         return posts;
     }
 
-    /* creates a new post without event */
-    function createPostWithoutEvent(string memory title, bytes32 hash) public onlyOwner {
-        _postIds.increment();
-        uint postId = _postIds.current();
-        Post storage post = idToPost[postId];
-        post.id = postId;
-        post.title = title;
-        post.published = true;
-        post.contentHash = hash;
-        hashToPost[hash] = post;
-        // emit PostCreated(postId, title, hash);
-    }
-    modifier onlyOwner() {
+     modifier onlyOwner() {
       require(msg.sender == owner,"Only Owner");
       _;
     }
