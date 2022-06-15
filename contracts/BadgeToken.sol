@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
 
-import "@openzeppelin//contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin//contracts/utils/Strings.sol";
-import "@openzeppelin//contracts/utils/Base64.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
+import "@openzeppelin/contracts/utils/Base64.sol";
 
 contract BadgeToken is ERC721 {
 
